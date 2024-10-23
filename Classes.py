@@ -59,6 +59,15 @@ class PressureVessel:
             MAWP = ((S * E * (tn - CA)) / (OR - (.4 * (tn - CA)))) - Ps
         return round(MAWP, 2)
 
+    #Calculate MAP in terms of Inside Radius
+    def MAP_IR(self, IR, S, E, tn):
+        MAP = (S * E * tn) / (IR + (.6 * tn))
+        return round(MAP, 2)
+
+    #Calculate MAP in terms of Outside Radius
+    def MAP_OR(self, OR, S, E, tn):
+        MAP = (S * E * tn) / (OR - (.4 * tn))
+        return round(MAP, 2)
 
 class Pump:
     

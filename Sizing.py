@@ -48,9 +48,13 @@ if userInput == "PV":
     #Calculate Maximum Allowable Working Pressure and Maximum Allowable Pressure
     if userInputPV == "minthickIR":
         MAWP_IR = pressureVessel.MAWP_IR(int(R), int(S), float(E), float(tn), float(CA))
+        MAP_IR = pressureVessel.MAP_IR(int(R), int(S), float(E), float(tn))
         print("MAWP is: " + str(MAWP_IR) + " psi")
+        print("MAP is: " + str(MAP_IR) + " psi")
     else:
         MAWP_OR = pressureVessel.MAWP_OR(int(R), int(S), float(E), float(tn), float(CA))
+        MAP_OR = pressureVessel.MAP_OR(int(R), int(S), float(E), float(tn))
         print("MAWP is: " + str(MAWP_OR) + " psi")
+        print("MAP is: " + str(MAP_OR) + " psi")
 
 
