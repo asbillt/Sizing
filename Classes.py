@@ -11,23 +11,53 @@ class PressureVessel:
     #S: Material Stress
     #E: Joint Efficiency
     #CA: Corrosion Allowance
-    #t: Minimum Required Thickness of Shell
+    #t: Minimum Required Thickness of Shell in Inches
+    #tn: Nominal Thickness of Shell in Inches
+    #Ps: Static Pressure Head in PSI
 
     #Calculate shell minimum thickness in terms of Inside Radius
-    def shellMinThicknessIR(self, P, IR, S, E, CA = 0):
+    def shellMinThickIR(self, P, IR, S, E, CA = 0):
         if CA == 0:
-            t = (P * IR) / ((S * E) - (0.6 * P))
+            Ps = ((IR * 2) / 12) / 2.31
+            t = ((P + Ps) * IR) / ((S * E) - (0.6 * (P + Ps)))
         else:
-            t = ((P * (IR + CA)) / ((S * E) - (0.6 * P))) + CA
+            Ps = (((IR * 2) + (CA * 2)) / 12) / 2.31
+            t = (((P + Ps) * (IR + CA)) / ((S * E) - (0.6 * (P + Ps)))) + CA
         return round(t, 4)
 
     #Calculate shell minimum thickness in terms of Outside Radius
-    def shellMinThicknessOR(self, P, OR, S, E, CA = 0):
+    def shellMinThickOR(self, P, OR, S, E, CA = 0):
         if CA == 0:
+            #Ps = 
             t = (P * OR) / ((S * E) + (0.4 * P))
         else:
-            t = ((P * OR) / ((S * E) - (0.6 * P))) + CA
+            #Ps = 
+            t = ((P * OR) / ((S * E) + (0.4 * P))) + CA
         return round(t, 4)
+
+    #Calculate MAWP in terms of Inside Radius
+    def MAWP_IR(self, IR, S, E, tn, CA = 0):
+        #Calculate Static Pressure Head assuming Specific Gravity = 1
+        #Divide by 12 to convert inches to feet. Divide by 2.31 to convert from feet to psi.
+        if CA == 0:
+            Ps = ((IR * 2) / 12) / 2.31
+            MAWP = ((S * E * tn) / (IR + (.6 * tn))) - Ps
+        else:
+            Ps = (((IR * 2) + (CA * 2)) / 12) / 2.31
+            MAWP = ((S * E * (tn - CA)) / ((IR + CA) + (.6 * (tn - CA)))) - Ps
+        return round(MAWP, 2)
+
+    #Calculate MAWP in terms of Outside Radius
+    def MAWP_OR(self, OR, S, E, tn, CA = 0):
+        #Calculate Static Pressure Head assuming Specific Gravity = 1
+        #Divide by 12 to convert inches to feet. Divide by 2.31 to convert from feet to psi.
+        if CA == 0:
+            Ps = (((OR * 2) - (tn * 2)) / 12) / 2.31
+            MAWP = ((S * E * tn) / (OR - (.4 * tn))) - Ps
+        else:
+            Ps = (((OR * 2) - ((tn - CA) * 2)) / 12) / 2.31
+            MAWP = ((S * E * (tn - CA)) / (OR - (.4 * (tn - CA)))) - Ps
+        return round(MAWP, 2)
 
 
 class Pump:

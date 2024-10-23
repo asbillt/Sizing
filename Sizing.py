@@ -4,10 +4,10 @@ import Classes
 
 #Take user input to determine which equipment will be sized
 userInput = input("What equipment do you want to size?\n"
-                  "Type \"PV\" for Pressure Vessel sizing\n"
-                  "Type \"P\" for Pump sizing\n"
-                  "Type \"HEX\" Heat Exchanger sizing\n"
-                  "Type \"PSV\" for Pressure Safety Valve sizing\n")
+                  "Type \"PV\" for Pressure Vessel\n"
+                  "Type \"P\" for Pump\n"
+                  "Type \"HEX\" Heat Exchanger\n"
+                  "Type \"PSV\" for Pressure Safety Valve\n")
 
 if userInput == "PV":
     pressureVessel = Classes.PressureVessel()
@@ -21,26 +21,36 @@ if userInput == "PV":
         R = input("Enter inside radius in inches: ")
         S = input("Enter allowable material stress in psi: ")
         E = input("Enter joint efficiency: ")
-        CA = input("Enter corrosion allowance: ")
-        shellMinThickness = pressureVessel.shellMinThicknessIR(int(P), int(R), int(S), float(E), float(CA))
+        CA = input("Enter corrosion allowance in inches: ")
+        shellMinThick = pressureVessel.shellMinThickIR(int(P), int(R), int(S), float(E), float(CA))
     elif userInputPV == "minthickOR":
         P = input("Enter design pressure in psi: ")
         R = input("Enter outside radius in inches: ")
         S = input("Enter allowable material stress in psi: ")
         E = input("Enter joint efficiency: ")
-        CA = input("Enter corrosion allowance: ")
-        shellMinThickness = pressureVessel.shellMinThicknessOR(int(P), int(R), int(S), float(E), float(CA))
-    print("The Minimum Required Thickness for the Shell is: " + str(shellMinThickness) + " inches.")
+        CA = input("Enter corrosion allowance in inches: ")
+        shellMinThick = pressureVessel.shellMinThickOR(int(P), int(R), int(S), float(E), float(CA))
+    print("The Minimum Required Thickness for the Shell is: " + str(shellMinThick) + " inches.")
 
-    #Loop through metal plate gauges to determine choice from the shellMinThickness
+    #Loop through metal plate gauges to determine choice from the shellMinThick
     n = 1
     for thickness in metalPlateThickness:
-        if shellMinThickness <= metalPlateThickness[0]:
+        if shellMinThick <= metalPlateThickness[0]:
+            tn = .1875
             print("Use .1875\" thick plate")
             break;
-        if shellMinThickness <= metalPlateThickness[n] and shellMinThickness > metalPlateThickness[n - 1]:
+        if shellMinThick <= metalPlateThickness[n] and shellMinThick > metalPlateThickness[n - 1]:
+            tn = metalPlateThickness[n]
             print("Use " + str(metalPlateThickness[n]) + "\" thick plate")
             break;
         n += 1
+
+    #Calculate Maximum Allowable Working Pressure and Maximum Allowable Pressure
+    if userInputPV == "minthickIR":
+        MAWP_IR = pressureVessel.MAWP_IR(int(R), int(S), float(E), float(tn), float(CA))
+        print("MAWP is: " + str(MAWP_IR) + " psi")
+    else:
+        MAWP_OR = pressureVessel.MAWP_OR(int(R), int(S), float(E), float(tn), float(CA))
+        print("MAWP is: " + str(MAWP_OR) + " psi")
 
 
