@@ -19,20 +19,18 @@ class PressureVessel:
     def shellMinThickIR(self, P, IR, S, E, CA = 0):
         if CA == 0:
             Ps = ((IR * 2) / 12) / 2.31
-            t = ((P + Ps) * IR) / ((S * E) - (0.6 * (P + Ps)))
+            t = ((P + Ps) * IR) / ((S * E) - (.6 * (P + Ps)))
         else:
             Ps = (((IR * 2) + (CA * 2)) / 12) / 2.31
-            t = (((P + Ps) * (IR + CA)) / ((S * E) - (0.6 * (P + Ps)))) + CA
+            t = (((P + Ps) * (IR + CA)) / ((S * E) - (.6 * (P + Ps)))) + CA
         return round(t, 4)
 
     #Calculate shell minimum thickness in terms of Outside Radius
     def shellMinThickOR(self, P, OR, S, E, CA = 0):
         if CA == 0:
-            #Ps = 
-            t = (P * OR) / ((S * E) + (0.4 * P))
+            t = (P * OR) / ((S * E) + (.4 * P))
         else:
-            #Ps = 
-            t = ((P * OR) / ((S * E) + (0.4 * P))) + CA
+            t = ((P * OR) / ((S * E) + (.4 * P))) + CA
         return round(t, 4)
 
     #Calculate MAWP in terms of Inside Radius
@@ -68,18 +66,3 @@ class PressureVessel:
     def MAP_OR(self, OR, S, E, tn):
         MAP = (S * E * tn) / (OR - (.4 * tn))
         return round(MAP, 2)
-
-class Pump:
-    
-    def __init__(self):
-        pass
-
-class HeatExchanger:
-    
-    def __init__(self):
-        pass
-
-class PSV:
-    
-    def __init__(self):
-        pass
