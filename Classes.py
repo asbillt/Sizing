@@ -5,64 +5,53 @@ class PressureVessel:
     def __init__(self):
         pass
 
-    #P: Design Pressure
-    #IR: Inside Radius in Inches
-    #OR: Outside Radius in Inches
-    #S: Material Stress
+    plate_thickness = [.1875, .25, .3125, .375, .4375, .5, .5625, .625, .6875, .75, .8125, .875, 1, 
+                           1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 4, 5] 
+
+    #P: Design Pressure (psi)
+    #R: Inside Radius (inches)
+    #D: Inside Diameter (inches)
+    #S: Material Stress (psi)
     #E: Joint Efficiency
-    #CA: Corrosion Allowance
-    #t: Minimum Required Thickness of Shell in Inches
-    #tn: Nominal Thickness of Shell in Inches
-    #Ps: Static Pressure Head in PSI
+    #CA: Corrosion Allowance (inches)
+    #t: Minimum Required Thickness of Shell (inches)
+    #tn: Nominal Thickness of Shell (inches)
+    #Ps: Static Pressure Head (psi)
 
-    #Calculate shell minimum thickness in terms of Inside Radius
-    def shellMinThickIR(self, P, IR, S, E, CA = 0):
-        if CA == 0:
-            Ps = ((IR * 2) / 12) / 2.31
-            t = ((P + Ps) * IR) / ((S * E) - (.6 * (P + Ps)))
-        else:
-            Ps = (((IR * 2) + (CA * 2)) / 12) / 2.31
-            t = (((P + Ps) * (IR + CA)) / ((S * E) - (.6 * (P + Ps)))) + CA
-        return round(t, 4)
+    #Calculate shell minimum thickness, MAWP and MAP
+    def shell(self, P, R, S, E, CA):
+        Ps = (((R * 2) + (CA * 2)) / 12) / 2.31
+        t = (((P + Ps) * (R + CA)) / ((S * E) - (.6 * (P + Ps)))) + CA
+        counter = 1
+        for thickness in self.plate_thickness:
+            if 0 < t <= .1875:
+                tn = thickness
+                print("Use .1875\" thick plate.")
+                break
+            if self.plate_thickness[counter - 1] <= t <= self.plate_thickness[counter]:
+                tn = self.plate_thickness[counter]
+                print("Use " + str(self.plate_thickness[counter]) + "\" thick plate.")
+                break
+            counter = counter + 1
+        MAWP = ((S * E * (tn - CA)) / ((R + CA) + (.6 * (tn - CA)))) - Ps
+        MAP = (S * E * tn) / (R + (.6 * tn))
+        return round(t, 4), round(MAWP, 2), round(MAP, 2)
 
-    #Calculate shell minimum thickness in terms of Outside Radius
-    def shellMinThickOR(self, P, OR, S, E, CA = 0):
-        if CA == 0:
-            t = (P * OR) / ((S * E) + (.4 * P))
-        else:
-            t = ((P * OR) / ((S * E) + (.4 * P))) + CA
-        return round(t, 4)
-
-    #Calculate MAWP in terms of Inside Radius
-    def MAWP_IR(self, IR, S, E, tn, CA = 0):
-        #Calculate Static Pressure Head assuming Specific Gravity = 1
-        #Divide by 12 to convert inches to feet. Divide by 2.31 to convert from feet to psi.
-        if CA == 0:
-            Ps = ((IR * 2) / 12) / 2.31
-            MAWP = ((S * E * tn) / (IR + (.6 * tn))) - Ps
-        else:
-            Ps = (((IR * 2) + (CA * 2)) / 12) / 2.31
-            MAWP = ((S * E * (tn - CA)) / ((IR + CA) + (.6 * (tn - CA)))) - Ps
-        return round(MAWP, 2)
-
-    #Calculate MAWP in terms of Outside Radius
-    def MAWP_OR(self, OR, S, E, tn, CA = 0):
-        #Calculate Static Pressure Head assuming Specific Gravity = 1
-        #Divide by 12 to convert inches to feet. Divide by 2.31 to convert from feet to psi.
-        if CA == 0:
-            Ps = (((OR * 2) - (tn * 2)) / 12) / 2.31
-            MAWP = ((S * E * tn) / (OR - (.4 * tn))) - Ps
-        else:
-            Ps = (((OR * 2) - ((tn - CA) * 2)) / 12) / 2.31
-            MAWP = ((S * E * (tn - CA)) / (OR - (.4 * (tn - CA)))) - Ps
-        return round(MAWP, 2)
-
-    #Calculate MAP in terms of Inside Radius
-    def MAP_IR(self, IR, S, E, tn):
-        MAP = (S * E * tn) / (IR + (.6 * tn))
-        return round(MAP, 2)
-
-    #Calculate MAP in terms of Outside Radius
-    def MAP_OR(self, OR, S, E, tn):
-        MAP = (S * E * tn) / (OR - (.4 * tn))
-        return round(MAP, 2)
+    def head(self, P, D, S, E, CA):
+        Ps = ((D + (CA * 2)) / 12) / 2.31
+        t = (((P + Ps) * (D + (2 * CA))) / ((2 * S * E) - (.2 * (P + Ps)))) + CA
+        counter = 1
+        for thickness in self.plate_thickness:
+            if 0 < t <= .1875:
+                tn = thickness
+                print("Use .1875\" thick plate.")
+                break
+            if self.plate_thickness[counter - 1] <= t <= self.plate_thickness[counter]:
+                tn = self.plate_thickness[counter]
+                print("Use " + str(self.plate_thickness[counter]) + "\" thick plate after forming.")
+                print("Use " + str(self.plate_thickness[counter + 1]) + "\" thick plate prior to forming.")
+                break
+            counter = counter + 1
+        MAWP = ((2 * S * E * (tn - CA)) / ((D + (2 * CA)) + (.2 * (tn - CA)))) - Ps
+        MAP = (2 * S * E * tn) / (D + (.2 * tn))
+        return round(t, 4), round(MAWP, 2), round(MAP, 2)
