@@ -14,7 +14,8 @@ match userInput:
         #Take user input to determine which Pressure Vessel calculation will be run
         userInputPV = input("What calculation do you want to run?\n"
                             "For UG-27(c)(1) Minimum Required Thickness of Shell under Internal Pressure type \"shell\" \n"
-                            "For UG-32(c)(1) Minimum Required Thickness of Ellipsoidal Head under Internal Pressure type \"head\" \n")
+                            "For UG-32(c)(1) Minimum Required Thickness of Ellipsoidal Head under Internal Pressure type \"head\" \n"
+                            "For UG-40 Limits of Reinforcement type \"limit\" \n")
         #Calculate minimum required thickness for shell/head, MAWP and MAP
         match userInputPV:
             case "shell":
@@ -37,6 +38,15 @@ match userInput:
                 print("Head Minimum Required Thickness: " + str(head) + " inches")
                 print("MAWP: " + str(MAWP) + " psi")
                 print("MAP: " + str(MAP) + " psi")
+            case "limit":
+                P = input("Enter design pressure in psi: ")
+                R = input("Enter inside radius in inches: ")
+                S = input("Enter allowable material stress in psi: ")
+                E = input("Enter joint efficiency: ")
+                CA = input("Enter corrosion allowance in inches: ")
+                NS = input("Enter nozzle size in inches: ")
+                parallel_limit = pressureVessel.limit(int(P), int(R), int(S), float(E), float(CA), float(NS))
+                print("The Parallel Limit of Reinforcement is: " + str(parallel_limit) + " inches.")
 
     case "P":
         print("In progress, try again later.")
