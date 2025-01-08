@@ -1,5 +1,16 @@
-import Classes
+from tkinter import *
+from tkinter import ttk
 
+root = Tk()
+menuValue = StringVar()
+dropDownMenu = ttk.Combobox(root, textvariable = menuValue)
+dropDownMenu.pack()
+dropDownMenu.config(values = ("Pressure Vessel", "Pump", "Heat Exchanger", "Compressor", "PSV"))
+root.mainloop()
+
+#import Classes
+
+'''
 #Take user input to determine which equipment will be sized
 userInput = input("What equipment do you want to size?\n"
                   "Type \"PV\" for Pressure Vessel\n"
@@ -57,4 +68,4 @@ match userInput:
     case "PSV":
         print("In progress, try again later.")
     case default:
-        print("You did not choose a correct option.")
+        print("You did not choose a correct option.")'''
