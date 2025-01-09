@@ -1,14 +1,31 @@
+import Classes
 from tkinter import *
 from tkinter import ttk
 
+#Create root window
+#Rename Tk title to Sizing
+#Start application in fullscreen
+#Replace Tk logo
 root = Tk()
-menuValue = StringVar()
-dropDownMenu = ttk.Combobox(root, textvariable = menuValue)
-dropDownMenu.pack()
-dropDownMenu.config(values = ("Pressure Vessel", "Pump", "Heat Exchanger", "Compressor", "PSV"))
-root.mainloop()
+root.title("Sizing")
+root.state("zoomed")
+root.iconbitmap("logo.ico")
 
-#import Classes
+notebook = ttk.Notebook(root)
+notebook.pack()
+framePSV = ttk.Frame(root)
+framePV = ttk.Frame(root)
+frameP = ttk.Frame(root)
+frameHE = ttk.Frame(root)
+frameC = ttk.Frame(root)
+notebook.add(framePSV, text = "Pressure Safety Valve")
+notebook.add(framePV, text = "Pressure Vessel")
+notebook.add(frameP, text = "Pump")
+notebook.add(frameHE, text = "Heat Exchanger")
+notebook.add(frameC, text = "Compressor")
+
+#Run eventloop
+root.mainloop()
 
 '''
 #Take user input to determine which equipment will be sized
