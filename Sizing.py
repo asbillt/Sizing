@@ -2,13 +2,30 @@ import Classes
 from tkinter import *
 from tkinter import ttk
 
+def shellThick():
+    pressure_vessel = Classes.PressureVessel()
+    button_value = radius.get()
+    match button_value:
+        case "UG-27(c)(1) Calculation":
+            P = entry_Shell_P.get()
+            R = entry_Shell_R.get()
+            S = entry_Shell_S.get()
+            E = entry_Shell_E.get()
+            CA = entry_Shell_CA.get()
+            shell, MAWP, MAP = pressure_vessel.shell(int(P), int(R), int(S), float(E), float(CA))
+            shell_output.set(shell)
+            shell_MAWP.set(MAWP)
+            shell_MAP.set(MAP)
+        case "Mandatory Appendix 1 Calculation":
+            print("Mandatory Appendix 1 Calculation")
+
 #Create root window
 root = Tk()
 root.title("Sizing")
 root.iconbitmap("logo.ico")
 root.state("zoomed")
 
-#Create notebook and parent frame (frame_PV) with child frames (frame_Shell and frame_Head)
+#Create notebook and frames
 notebook = ttk.Notebook(root)
 frame_PV = ttk.Frame(notebook)
 frame_PSV = ttk.Frame(notebook)
@@ -21,16 +38,19 @@ frame_PSV.config(padding = 1)
 frame_Head.config(padding = 15, relief = "solid")
 frame_Shell.config(padding = 15, relief = "solid")
 
-#Place notebook and parent frame
+#Place notebook and frames
 notebook.add(frame_PV, text = "Pressure Vessel")
 notebook.add(frame_PSV, text = "Pressure Safety Valve")
 notebook.pack()
 frame_Shell.grid(row = 1, column = 0, padx = 10, pady = 10)
 frame_Head.grid(row = 1, column = 1, padx = 10, pady = 10)
 
-#Use a StringVar to store the selected Radio Button value
+#Use a StringVar to store the selected Radio Button values
 radius = StringVar(value = "UG-27(c)(1) Calculation")
 head_type = StringVar(value = "ellipsoidal")
+shell_output = StringVar()
+shell_MAWP = StringVar()
+shell_MAP = StringVar()
 
 #Create Pressure Vessel Tab Widgets
 label_title = ttk.Label(frame_PV, text = "Pressure Vessel Calculations")
@@ -66,16 +86,16 @@ entry_Head_D = ttk.Entry(frame_Head, width = 20)
 entry_Head_E = ttk.Entry(frame_Head, width = 20)
 entry_Head_CA = ttk.Entry(frame_Head, width = 20)
 
-calculate_Shell = ttk.Button(frame_Shell, text = "Calculate")
+calculate_Shell = ttk.Button(frame_Shell, text = "Calculate", command = shellThick)
 calculate_Head = ttk.Button(frame_Head, text = "Calculate")
 
 output_Shell = ttk.Label(frame_Shell, text = "Output")
 label_Shell = ttk.Label(frame_Shell, text = "Minimum Required Thickness (in):")
 label_Shell_MAWP = ttk.Label(frame_Shell, text = "MAWP (psi):")
 label_Shell_MAP = ttk.Label(frame_Shell, text = "MAP (psi):")
-label_Shell_output = ttk.Label(frame_Shell, text = "TBD")
-label_Shell_MAWP_output = ttk.Label(frame_Shell, text = "TBD")
-label_Shell_MAP_output = ttk.Label(frame_Shell, text = "TBD")
+label_Shell_output = ttk.Label(frame_Shell, textvariable = shell_output)
+label_Shell_MAWP_output = ttk.Label(frame_Shell, textvariable = shell_MAWP)
+label_Shell_MAP_output = ttk.Label(frame_Shell, textvariable = shell_MAP)
 
 output_Head = ttk.Label(frame_Head, text = "Output")
 
