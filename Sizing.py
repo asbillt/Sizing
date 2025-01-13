@@ -8,72 +8,129 @@ root.title("Sizing")
 root.iconbitmap("logo.ico")
 root.state("zoomed")
 
-#Create notebook and frames
+#Create notebook and parent frame (frame_PV) with child frames (frame_Shell and frame_Head)
 notebook = ttk.Notebook(root)
 frame_PV = ttk.Frame(notebook)
 frame_PSV = ttk.Frame(notebook)
+frame_Shell = ttk.Frame(frame_PV)
+frame_Head = ttk.Frame(frame_PV)
 
-#Place notebook and frame
+#Configure frames
+frame_PV.config(padding = 1)
+frame_PSV.config(padding = 1)
+frame_Head.config(padding = 15, relief = "solid")
+frame_Shell.config(padding = 15, relief = "solid")
+
+#Place notebook and parent frame
 notebook.add(frame_PV, text = "Pressure Vessel")
 notebook.add(frame_PSV, text = "Pressure Safety Valve")
 notebook.pack()
+frame_Shell.grid(row = 1, column = 0, padx = 10, pady = 10)
+frame_Head.grid(row = 1, column = 1, padx = 10, pady = 10)
 
 #Use a StringVar to store the selected Radio Button value
-radius = StringVar(value = "Inside Radius")
+radius = StringVar(value = "UG-27(c)(1) Calculation")
+head_type = StringVar(value = "ellipsoidal")
 
 #Create Pressure Vessel Tab Widgets
-button_IR = ttk.Radiobutton(frame_PV, text = "Inside Radius", variable = radius, value = "UG-27(c)(1) Calculation")
-button_MA = ttk.Radiobutton(frame_PV, text = "Outside Radius", variable = radius, value = "Mandatory Appendix 1 Calculation")
+label_title = ttk.Label(frame_PV, text = "Pressure Vessel Calculations")
 
-label_radius = ttk.Label(frame_PV, text = "test")
-label_P = ttk.Label(frame_PV, text = "Design Pressure (psi)")
-label_R = ttk.Label(frame_PV, text = "Radius (in)")
-label_S = ttk.Label(frame_PV, text = "Allowable Stress (psi)")
-label_E = ttk.Label(frame_PV, text = "Joint Efficiency")
-label_CA = ttk.Label(frame_PV, text = "Corrosion Allowance (in)")
+button_IR = ttk.Radiobutton(frame_Shell, text = "Inside Radius", variable = radius, value = "UG-27(c)(1) Calculation")
+button_MA = ttk.Radiobutton(frame_Shell, text = "Outside Radius", variable = radius, value = "Mandatory Appendix 1 Calculation")
 
-entry_P = ttk.Entry(frame_PV, width = 20)
-entry_R = ttk.Entry(frame_PV, width = 20)
-entry_S = ttk.Entry(frame_PV, width = 20)
-entry_E = ttk.Entry(frame_PV, width = 20)
-entry_CA = ttk.Entry(frame_PV, width = 20)
+button_ellip = ttk.Radiobutton(frame_Head, text = "2:1 Ellipsoidal", variable = head_type, value = "ellipsoidal")
+button_hemi = ttk.Radiobutton(frame_Head, text = "Hemispherical", variable = head_type, value = "hemispherical")
 
-calculate = ttk.Button(frame_PV, text = "Calculate")
+label_radius = ttk.Label(frame_Shell, textvariable = radius)
+label_Shell_P = ttk.Label(frame_Shell, text = "Design Pressure (psi)")
+label_Shell_R = ttk.Label(frame_Shell, text = "Radius (in)")
+label_Shell_S = ttk.Label(frame_Shell, text = "Allowable Stress (psi)")
+label_Shell_E = ttk.Label(frame_Shell, text = "Joint Efficiency")
+label_Shell_CA = ttk.Label(frame_Shell, text = "Corrosion Allowance (in)")
 
-output = ttk.Label(frame_PV, text = "Output")
-label_shell = ttk.Label(frame_PV, text = "Minimum Required Thickness (in):")
-label_MAWP = ttk.Label(frame_PV, text = "MAWP (psi):")
-label_MAP = ttk.Label(frame_PV, text = "MAP (psi):")
-label_shell_output = ttk.Label(frame_PV, text = "min. output")
-label_MAWP_output = ttk.Label(frame_PV, text = "MAWP")
-label_MAP_output = ttk.Label(frame_PV, text = "MAP")
+label_Head_P = ttk.Label(frame_Head, text = "Design Pressure (psi)")
+label_Head_S = ttk.Label(frame_Head, text = "Allowable Stress (psi)")
+label_Head_D = ttk.Label(frame_Head, text = "Diameter (in)")
+label_Head_E = ttk.Label(frame_Head, text = "Joint Efficiency")
+label_Head_CA = ttk.Label(frame_Head, text = "Corrosion Allowance (in)")
+
+entry_Shell_P = ttk.Entry(frame_Shell, width = 20)
+entry_Shell_R = ttk.Entry(frame_Shell, width = 20)
+entry_Shell_S = ttk.Entry(frame_Shell, width = 20)
+entry_Shell_E = ttk.Entry(frame_Shell, width = 20)
+entry_Shell_CA = ttk.Entry(frame_Shell, width = 20)
+
+entry_Head_P = ttk.Entry(frame_Head, width = 20)
+entry_Head_S = ttk.Entry(frame_Head, width = 20)
+entry_Head_D = ttk.Entry(frame_Head, width = 20)
+entry_Head_E = ttk.Entry(frame_Head, width = 20)
+entry_Head_CA = ttk.Entry(frame_Head, width = 20)
+
+calculate_Shell = ttk.Button(frame_Shell, text = "Calculate")
+calculate_Head = ttk.Button(frame_Head, text = "Calculate")
+
+output_Shell = ttk.Label(frame_Shell, text = "Output")
+label_Shell = ttk.Label(frame_Shell, text = "Minimum Required Thickness (in):")
+label_Shell_MAWP = ttk.Label(frame_Shell, text = "MAWP (psi):")
+label_Shell_MAP = ttk.Label(frame_Shell, text = "MAP (psi):")
+label_Shell_output = ttk.Label(frame_Shell, text = "TBD")
+label_Shell_MAWP_output = ttk.Label(frame_Shell, text = "TBD")
+label_Shell_MAP_output = ttk.Label(frame_Shell, text = "TBD")
+
+output_Head = ttk.Label(frame_Head, text = "Output")
 
 #Place Pressure Vessel Tab Widgets
+label_title.grid(row = 0, column = 0, columnspan = 2)
+
 button_IR.grid(row = 0, column = 0)
 button_MA.grid(row = 0, column = 1)
 
+button_ellip.grid(row = 0, column = 0)
+button_hemi.grid(row = 0, column = 1)
+
 label_radius.grid(row = 1, column = 0, columnspan = 2)
-label_P.grid(row = 2, column = 0, stick = "w")
-label_R.grid(row = 3, column = 0, stick = "w")
-label_S.grid(row = 4, column = 0, stick = "w")
-label_E.grid(row = 5, column = 0, stick = "w")
-label_CA.grid(row = 6, column = 0, stick = "w")
+label_Shell_P.grid(row = 2, column = 0, stick = "w")
+label_Shell_R.grid(row = 3, column = 0, stick = "w")
+label_Shell_S.grid(row = 4, column = 0, stick = "w")
+label_Shell_E.grid(row = 5, column = 0, stick = "w")
+label_Shell_CA.grid(row = 6, column = 0, stick = "w")
 
-entry_P.grid(row = 2, column = 1)
-entry_R.grid(row = 3, column = 1)
-entry_S.grid(row = 4, column = 1)
-entry_E.grid(row = 5, column = 1)
-entry_CA.grid(row = 6, column = 1)
+label_Head_P.grid(row = 1, column = 0, stick = "w")
+label_Head_S.grid(row = 2, column = 0, stick = "w")
+label_Head_D.grid(row = 3, column = 0, stick = "w")
+label_Head_E.grid(row = 4, column = 0, stick = "w")
+label_Head_CA.grid(row = 5, column = 0, stick = "w")
 
-calculate.grid(row = 7, column = 0, columnspan = 2)
+entry_Shell_P.grid(row = 2, column = 1)
+entry_Shell_R.grid(row = 3, column = 1)
+entry_Shell_S.grid(row = 4, column = 1)
+entry_Shell_E.grid(row = 5, column = 1)
+entry_Shell_CA.grid(row = 6, column = 1)
 
-output.grid(row = 8, column = 0, columnspan = 2)
-label_shell.grid(row = 9, column = 0, stick = "w")
-label_MAWP.grid(row = 10, column = 0, stick = "W")
-label_MAP.grid(row = 11, column = 0, stick = "w")
-label_shell_output.grid(row = 9, column = 1)
-label_MAWP_output.grid(row = 10, column = 1)
-label_MAP_output.grid(row = 11, column = 1)
+entry_Head_P.grid(row = 1, column = 1)
+entry_Head_S.grid(row = 2, column = 1)
+entry_Head_D.grid(row = 3, column = 1)
+entry_Head_E.grid(row = 4, column = 1)
+entry_Head_CA.grid(row = 5, column = 1)
+
+calculate_Shell.grid(row = 7, column = 0, columnspan = 2)
+calculate_Head.grid(row = 6, column = 0, columnspan = 2)
+
+output_Shell.grid(row = 8, column = 0, columnspan = 2)
+label_Shell.grid(row = 9, column = 0, stick = "w")
+label_Shell_MAWP.grid(row = 10, column = 0, stick = "W")
+label_Shell_MAP.grid(row = 11, column = 0, stick = "w")
+label_Shell_output.grid(row = 9, column = 1)
+label_Shell_MAWP_output.grid(row = 10, column = 1)
+label_Shell_MAP_output.grid(row = 11, column = 1)
+
+output_Head.grid(row = 7, column = 0, columnspan = 2)
+
+#Create Pressure Safety Valve Tab Widgets
+label_title = ttk.Label(frame_PSV, text = "Pressure Safety Valve Calculations")
+
+#Place Pressure Safety Valve Tab Widgets
+label_title.grid(row = 0, column = 0)
 
 #Run eventloop
 root.mainloop()
